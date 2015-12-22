@@ -1,18 +1,28 @@
-<template id="hello-hello-template">
+<template id="button-test-template">
     <style>
     </style>
 
-    <p><content select="span"></content>
-    <button-test></button-test></p>
+    <button onclick="eventFunction()">Click me</button>
 </template>
 
 <script>
     // thisDoc refers to the "importee", which is dom-code.html
     // polyfill needs _currentScript instead of currentScript
-    var helloHelloDoc = document._currentScript.ownerDocument;
+    var buttonTestDoc = document._currentScript.ownerDocument;
     // mainDoc refers to the "importer", which is index.html
     var mainDoc = document;
     var proto = Object.create(HTMLElement.prototype);
+
+    var eventFunction = function() {
+        // Create the event
+                var event = new CustomEvent("name-of-event", { "detail": "Example of an event" });
+
+        // Dispatch/Trigger/Fire the event
+                document.dispatchEvent(event);
+
+        console.log("triggered Event");
+    };
+
     proto.createdCallback = function() {
         var helloHelloRoot;
         if(this.attachShadow) {
@@ -22,11 +32,11 @@
             helloHelloRoot = this.createShadowRoot();
         }
 
-        var template = helloHelloDoc.querySelector('#hello-hello-template');
-        var clone = helloHelloDoc.importNode(template.content, true);
+        var template = buttonTestDoc.querySelector('#button-test-template');
+        var clone = buttonTestDoc.importNode(template.content, true);
         helloHelloRoot.appendChild(clone);
     };
-    mainDoc.registerElement('hello-hello', {
+    mainDoc.registerElement('button-test', {
         prototype: proto
     });
 </script>
