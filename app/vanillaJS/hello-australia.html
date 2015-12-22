@@ -1,0 +1,31 @@
+<template id="hello-australia-template">
+    <style>
+    </style>
+
+    <p>Hello Australia Vanilla<content select="hello-hello"></content></p>
+</template>
+
+<script>
+    // thisDoc refers to the "importee", which is dom-code.html
+    // polyfill needs _currentScript instead of currentScript
+    var thisDoc = document._currentScript.ownerDocument;
+    // mainDoc refers to the "importer", which is index.html
+    var mainDoc = document;
+    var proto = Object.create(HTMLElement.prototype);
+    proto.createdCallback = function() {
+        var shadowRoot;
+        if(this.attachShadow) {
+            // Safari nightly
+            shadowRoot = this.attachShadow({mode: 'open'});
+        } else {
+            shadowRoot = this.createShadowRoot();
+        }
+
+        var template = thisDoc.querySelector('#hello-australia-template');
+        var clone = thisDoc.importNode(template.content, true);
+        shadowRoot.appendChild(clone);
+    };
+    mainDoc.registerElement('hello-australia-vanilla', {
+        prototype: proto
+    });
+</script>

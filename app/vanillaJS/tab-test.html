@@ -1,0 +1,31 @@
+<template id="hello-hello-template">
+    <style>
+    </style>
+
+    <p><content select="span"></content></p>
+</template>
+
+<script>
+    // thisDoc refers to the "importee", which is dom-code.html
+    // polyfill needs _currentScript instead of currentScript
+    var helloHelloDoc = document._currentScript.ownerDocument;
+    // mainDoc refers to the "importer", which is index.html
+    var mainDoc = document;
+    var proto = Object.create(HTMLElement.prototype);
+    proto.createdCallback = function() {
+        var helloHelloRoot;
+        if(this.attachShadow) {
+            // Safari nightly
+            helloHelloRoot = this.attachShadow({mode: 'open'});
+        } else {
+            helloHelloRoot = this.createShadowRoot();
+        }
+
+        var template = helloHelloDoc.querySelector('#hello-hello-template');
+        var clone = helloHelloDoc.importNode(template.content, true);
+        helloHelloRoot.appendChild(clone);
+    };
+    mainDoc.registerElement('hello-hello', {
+        prototype: proto
+    });
+</script>
